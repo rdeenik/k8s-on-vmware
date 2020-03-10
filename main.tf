@@ -261,3 +261,7 @@ resource "null_resource" "kubespray" {
     null_resource.cloud-init-adminhost,
   ]
 }
+
+output "k8s-adminhost-ip" {
+  value = vsphere_virtual_machine.k8s-adminhost.default_ip_address
+}
