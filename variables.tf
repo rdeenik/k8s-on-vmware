@@ -53,7 +53,7 @@ variable "k8snodes" {
         memory                  = "2048"
         disk_size               = "20"
         template                = "ubuntu-bionic-18.04-cloudimg"
-        use_iscsi_interface     = "yes"
+        use_iscsi_interface     = "no"
         iscsi_interface_name    = "ens224"
         iscsi_subnet            = "172.16.10."
         iscsi_startip           = "101"
