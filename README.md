@@ -20,4 +20,5 @@ This terraform project allows you to deploy Kubernetes on vSphere. It uses Kubes
   ```
 
   Test the Terraform installation (this command should return the Terraform version installed):
+  
   `terraform -v`
