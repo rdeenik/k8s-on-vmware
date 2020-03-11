@@ -41,7 +41,7 @@ data "local_file" "ssh-publickey" {
 provider "vsphere" {
   user                  = var.vsphere_config.user
   password              = var.vsphere_config.password
-  vsphere_server        = var.vsphere_config.vcenter_url
+  vsphere_server        = var.vsphere_config.vcenter_server
   allow_unverified_ssl  = true
 }
 
