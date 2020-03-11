@@ -265,3 +265,7 @@ resource "null_resource" "kubespray" {
 output "k8s-adminhost-ip" {
   value = vsphere_virtual_machine.k8s-adminhost.default_ip_address
 }
+
+output "k8s-node_ips" {
+  value = ["${vsphere_virtual_machine.*.default_ip_address"]
+}
