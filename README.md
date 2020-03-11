@@ -5,7 +5,9 @@ This terraform project allows you to deploy Kubernetes on vSphere. It uses Kubes
 
 ### MacOS:
 Install xcode, run:
-`xcode-select --install`
+```
+xcode-select --install
+```
 
 **Install Terraform**
 (see https://learn.hashicorp.com/terraform/getting-started/install.html)
