@@ -267,5 +267,5 @@ output "k8s-adminhost-ip" {
 }
 
 output "k8s-node_ips" {
-  value = ["${vsphere_virtual_machine.*.default_ip_address"]
+  value = ["${vsphere_virtual_machine.k8snodes[*].default_ip_address}"]
 }
