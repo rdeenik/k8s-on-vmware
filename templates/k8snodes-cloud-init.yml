@@ -24,7 +24,7 @@ write_files:
           ethernets:
               ens192:
                   dhcp4: true
-              %{ if use_iscsi_nic = "yes" }
+              %{ if use_iscsi_nic == "yes" }
               ${iscsi_int_name}:
                   dhcp4: false
                   addresses: ${iscsi-ip-addr}
