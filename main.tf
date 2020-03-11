@@ -157,7 +157,7 @@ resource "vsphere_virtual_machine" "k8snodes" {
   vapp {
     properties = {
       hostname          = "${var.k8snodes.hostname}${count.index + 1}"
-      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8snodes.iscsi_subnet}${var.k8snodes.iscsi_startip + count.index}/${var.k8snodes.iscsi_maskbits}]", hostname="${var.k8snodes.hostname}${count.index + 1}", iscsi_int_name = var.k8snodes.iscsi_interface_name }))
+      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8snodes.iscsi_subnet}${var.k8snodes.iscsi_startip + count.index}/${var.k8snodes.iscsi_maskbits}]", hostname="${var.k8snodes.hostname}${count.index + 1}", use_iscsi_nic = var.k8snodes.use_iscsi_interface, iscsi_int_name = var.k8snodes.iscsi_interface_name }))
     }
   }
 

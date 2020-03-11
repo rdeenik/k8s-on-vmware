@@ -24,9 +24,11 @@ write_files:
           ethernets:
               ens192:
                   dhcp4: true
-              ens224:
+              %{ if use_iscsi_nic = "yes" }
+              ${iscsi_int_name}:
                   dhcp4: false
                   addresses: ${iscsi-ip-addr}
+              %{ endif }
           version: 2
     path: /etc/netplan/50-cloud-init.yaml
 
