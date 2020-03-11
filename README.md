@@ -11,10 +11,10 @@ Install Terraform (see https://learn.hashicorp.com/terraform/getting-started/ins
 https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip
 
 Example steps:
-`curl -O https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip`
-`unzip terraform_0.12.23_darwin_amd64.zip`
-`sudo mkdir -p /usr/local/bin`
-`sudo mv terraform /usr/local/bin/`
+`curl -O https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip
+unzip terraform_0.12.23_darwin_amd64.zip
+sudo mkdir -p /usr/local/bin
+sudo mv terraform /usr/local/bin/`
 
 Test installation:
 `terraform -v`
