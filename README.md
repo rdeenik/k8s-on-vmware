@@ -9,9 +9,8 @@ Install xcode, since xcode contains tools like `git` that we use to download thi
 xcode-select --install
 ```
 
-**Install Terraform**
+Install Terraform
 (see https://learn.hashicorp.com/terraform/getting-started/install.html)
-https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip
 
 Example steps:
 `curl -O https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip
