@@ -105,7 +105,7 @@ resource "vsphere_virtual_machine" "k8s-adminhost" {
   vapp {
     properties = {
       hostname          = var.k8s-adminhost.hostname
-      user-data         = base64encode(templatefile("templates/adminhost-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content }))
+      user-data         = base64encode(templatefile("templates/adminhost-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, timezone = var.k8s-global.timezone }))
     }
   }
 
@@ -157,7 +157,7 @@ resource "vsphere_virtual_machine" "k8s-nodes" {
   vapp {
     properties = {
       hostname          = "${var.k8s-nodes.hostname}${count.index + 1}"
-      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8s-nodes.iscsi_subnet}${var.k8s-nodes.iscsi_startip + count.index}/${var.k8s-nodes.iscsi_maskbits}]", hostname="${var.k8s-nodes.hostname}${count.index + 1}", use_iscsi_nic = var.k8s-nodes.use_iscsi_interface, iscsi_int_name = var.k8s-nodes.iscsi_interface_name }))
+      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8s-nodes.iscsi_subnet}${var.k8s-nodes.iscsi_startip + count.index}/${var.k8s-nodes.iscsi_maskbits}]", hostname="${var.k8s-nodes.hostname}${count.index + 1}", use_iscsi_nic = var.k8s-nodes.use_iscsi_interface, iscsi_int_name = var.k8s-nodes.iscsi_interface_name, timezone = var.k8s-global.timezone }))
     }
   }
 

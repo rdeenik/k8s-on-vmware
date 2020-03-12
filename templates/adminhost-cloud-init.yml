@@ -17,4 +17,5 @@ packages:
   - python3-pip
 
 runcmd:
+  - timedatectl set-timezone ${timezone}
   - touch /etc/cloud/cloud-init.done
