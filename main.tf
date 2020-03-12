@@ -21,6 +21,12 @@ resource "null_resource" "generate-sshkey" {
     }
 }
 
+locals {
+  change_kube_version = "sed -i 's/kube_version: .*/kube_version: ${var.k8s-global.kube_version}/g' ~/kubespray/inventory/k8s-on-vmware/group_vars/k8s-cluster/k8s-cluster.yml"
+  default_kube_version = "echo \"Using default Kubespray version for Kubernetes deployment\""
+}
+
+
 data "local_file" "ssh-privatekey" {
   filename            = "${var.k8s-global.private_key}"
 
@@ -236,6 +242,7 @@ resource "null_resource" "prepare-kubespray" {
       "pip3 install --upgrade pip",
       "git clone https://github.com/kubernetes-sigs/kubespray.git",
       "cd ~/kubespray",
+      ${var.k8s-global.k8s_version != "default" ? local.change_kube_version : local.default_kube_version},
       "pip3 install -r requirements.txt",
       "cp -rfp inventory/sample inventory/k8s-on-vmware",
       "echo ${join(" ", vsphere_virtual_machine.k8s-nodes.*.default_ip_address)} >/tmp/ips",
@@ -245,7 +252,7 @@ resource "null_resource" "prepare-kubespray" {
       "echo \"CONFIG_FILE=inventory/k8s-on-vmware/hosts.yml python3 contrib/inventory_builder/inventory.py \\$${IPS[@]}\" >> ~/run-kubespray.sh",
       "echo \"~/.local/bin/ansible-playbook -i inventory/k8s-on-vmware/hosts.yml --become --become-user=root cluster.yml\" >> ~/run-kubespray.sh",
       "echo \"cd ~/\" >> ~/run-kubespray.sh",
-      "echo \"mkdir .kube\" >> ~/run-kubespray.sh",
+      "echo \"mkdir -p .kube\" >> ~/run-kubespray.sh",
       "echo \"ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo cp /etc/kubernetes/admin.conf ~/config\" >> ~/run-kubespray.sh",
       "echo \"ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo chown ${var.k8s-global.username}:${var.k8s-global.username} ~/config\" >> ~/run-kubespray.sh",
       "echo \"scp -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address}:~/config .kube/config\" >> ~/run-kubespray.sh",

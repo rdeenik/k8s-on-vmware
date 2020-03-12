@@ -27,6 +27,8 @@ variable "k8s-global" {
         username                = "k8sadmin"
         timezone                = "Europe/Amsterdam"
         run_kubespray           = "no"
+        k8s_version             = "v1.17.2"
+        #k8s_version             = "default"
         private_key             = "keys/id_rsa-k8s-on-vmware"
         public_key              = "keys/id_rsa-k8s-on-vmware.pub"
     }
