@@ -244,6 +244,7 @@ resource "null_resource" "prepare-kubespray" {
       "echo \"declare -a IPS=(`cat /tmp/ips`)\" >> ~/run-kubespray.sh",
       "echo \"CONFIG_FILE=inventory/k8s-on-vmware/hosts.yml python3 contrib/inventory_builder/inventory.py \\$${IPS[@]}\" >> ~/run-kubespray.sh",
       "echo \"~/.local/bin/ansible-playbook -i inventory/k8s-on-vmware/hosts.yml --become --become-user=root cluster.yml\" >> ~/run-kubespray.sh",
+      "echo \"cd ~/\" >> ~/run-kubespray.sh",
       "echo \"mkdir .kube\" >> ~/run-kubespray.sh",
       "echo \"ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo cp /etc/kubernetes/admin.conf ~/config\" >> ~/run-kubespray.sh",
       "echo \"ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo chown ${var.k8s-global.username}:${var.k8s-global.username} ~/config\" >> ~/run-kubespray.sh",
