@@ -22,6 +22,7 @@ variable "k8s-global" {
 
     default = {
         username                = "k8sadmin"
+        run_kuebspray           = "no"
         private_key             = "keys/id_rsa-k8s-on-vmware"
         public_key              = "keys/id_rsa-k8s-on-vmware.pub"
     }

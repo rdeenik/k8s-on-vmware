@@ -219,7 +219,7 @@ resource "null_resource" "set-public-key" {
   }
 }
 
-resource "null_resource" "kubespray" {
+resource "null_resource" "prepare-kubespray" {
   connection {
     host = vsphere_virtual_machine.k8s-adminhost.default_ip_address
     type = "ssh"
@@ -245,6 +245,28 @@ resource "null_resource" "kubespray" {
       "echo \"CONFIG_FILE=inventory/k8s-on-vmware/hosts.yml python3 contrib/inventory_builder/inventory.py \\$${IPS[@]}\" >> ~/run-kubespray.sh",
       "echo \"~/.local/bin/ansible-playbook -i inventory/k8s-on-vmware/hosts.yml --become --become-user=root cluster.yml\" >> ~/run-kubespray.sh",
       "chmod +x ~/run-kubespray.sh",
+    ]
+  }
+  depends_on = [
+    vsphere_virtual_machine.k8s-adminhost,
+    vsphere_virtual_machine.k8snodes,
+    null_resource.set-public-key,
+    null_resource.cloud-init-adminhost,
+  ]
+}
+
+resource "null_resource" "run-kubespray" {
+  count = var.k8s-global.run_kuebspray == "yes" ? 1 : 0
+  
+  connection {
+    host = vsphere_virtual_machine.k8s-adminhost.default_ip_address
+    type = "ssh"
+    user = var.k8s-global.username
+    private_key = file(var.k8s-global.private_key)
+  }
+ 
+  provisioner "remote-exec" {
+    inline = [
       "cd ~/",
       "~/run-kubespray.sh",
       "mkdir .kube",
@@ -255,10 +277,7 @@ resource "null_resource" "kubespray" {
     ]
   }
   depends_on = [
-    vsphere_virtual_machine.k8s-adminhost,
-    vsphere_virtual_machine.k8snodes,
-    null_resource.set-public-key,
-    null_resource.cloud-init-adminhost,
+    null_resource.prepare-kubespray,
   ]
 }
 
