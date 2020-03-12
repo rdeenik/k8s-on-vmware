@@ -4,9 +4,10 @@ variable "vsphere_config" {
     description                 = "vSphere environment and connection details"
 
     default = {
+        # Enter your vCenter server IP address or DNS name below and the 
+        vcenter_server          = ""
         user                    = "administrator@vsphere.local"
         password                = ""
-        vcenter_server          = ""
         datacenter              = "datacenter"
         cluster                 = "cluster"
         datastore               = "datastore1"
