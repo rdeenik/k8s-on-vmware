@@ -16,6 +16,7 @@ packages:
   - net-tools
   - open-iscsi
   - multipath-tools
+  - nfs-common
 
 # Set the IP addresses
 write_files:

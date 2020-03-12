@@ -8,9 +8,11 @@ variable "vsphere_config" {
         vcenter_server          = ""
         user                    = "administrator@vsphere.local"
         password                = ""
+        # Enter the datacenter, cluster and datastore to deploy the VM's to
         datacenter              = "datacenter"
         cluster                 = "cluster"
         datastore               = "datastore1"
+        # Enter the network portgroup names to use, iscsi_network is optional, see k8s-nodes
         vm_network              = "VM Network"
         iscsi_network           = "iSCSI"
     }
@@ -23,7 +25,7 @@ variable "k8s-global" {
 
     default = {
         username                = "k8sadmin"
-        run_kuebspray           = "no"
+        run_kubespray           = "no"
         private_key             = "keys/id_rsa-k8s-on-vmware"
         public_key              = "keys/id_rsa-k8s-on-vmware.pub"
     }
@@ -44,7 +46,7 @@ variable "k8s-adminhost" {
 }
 
 # K8S node config parameters
-variable "k8snodes" {
+variable "k8s-nodes" {
     type                        = map(string)
     description                 = "Details for the k8s worker nodes"
 

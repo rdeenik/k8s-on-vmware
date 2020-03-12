@@ -122,14 +122,14 @@ resource "vsphere_virtual_machine" "k8s-adminhost" {
 }
 
 # Creating the K8S worker nodes on vSphere, for the actual K8S cluster
-resource "vsphere_virtual_machine" "k8snodes" {
-  count                 = var.k8snodes.number_of_nodes
-  name                  = "${var.k8snodes.hostname}${count.index + 1}"
+resource "vsphere_virtual_machine" "k8s-nodes" {
+  count                 = var.k8s-nodes.number_of_nodes
+  name                  = "${var.k8s-nodes.hostname}${count.index + 1}"
   resource_pool_id      = data.vsphere_compute_cluster.cluster.resource_pool_id
   datastore_id          = data.vsphere_datastore.datastore.id
 
-  num_cpus              = var.k8snodes.num_cpus
-  memory                = var.k8snodes.memory
+  num_cpus              = var.k8s-nodes.num_cpus
+  memory                = var.k8s-nodes.memory
   guest_id              = data.vsphere_virtual_machine.template.guest_id
 
   scsi_type             = data.vsphere_virtual_machine.template.scsi_type
@@ -156,8 +156,8 @@ resource "vsphere_virtual_machine" "k8snodes" {
 
   vapp {
     properties = {
-      hostname          = "${var.k8snodes.hostname}${count.index + 1}"
-      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8snodes.iscsi_subnet}${var.k8snodes.iscsi_startip + count.index}/${var.k8snodes.iscsi_maskbits}]", hostname="${var.k8snodes.hostname}${count.index + 1}", use_iscsi_nic = var.k8snodes.use_iscsi_interface, iscsi_int_name = var.k8snodes.iscsi_interface_name }))
+      hostname          = "${var.k8s-nodes.hostname}${count.index + 1}"
+      user-data         = base64encode(templatefile("templates/k8snodes-cloud-init.yml", { username = var.k8s-global.username, public-key = data.local_file.ssh-publickey.content, iscsi-ip-addr = "[${var.k8s-nodes.iscsi_subnet}${var.k8s-nodes.iscsi_startip + count.index}/${var.k8s-nodes.iscsi_maskbits}]", hostname="${var.k8s-nodes.hostname}${count.index + 1}", use_iscsi_nic = var.k8s-nodes.use_iscsi_interface, iscsi_int_name = var.k8s-nodes.iscsi_interface_name }))
     }
   }
 
@@ -238,7 +238,7 @@ resource "null_resource" "prepare-kubespray" {
       "cd ~/kubespray",
       "pip3 install -r requirements.txt",
       "cp -rfp inventory/sample inventory/k8s-on-vmware",
-      "echo ${join(" ", vsphere_virtual_machine.k8snodes.*.default_ip_address)} >/tmp/ips",
+      "echo ${join(" ", vsphere_virtual_machine.k8s-nodes.*.default_ip_address)} >/tmp/ips",
       "echo \"#!/bin/bash\" > ~/run-kubespray.sh",
       "echo \"cd ~/kubespray/\" >> ~/run-kubespray.sh",
       "echo \"declare -a IPS=(`cat /tmp/ips`)\" >> ~/run-kubespray.sh",
@@ -249,14 +249,14 @@ resource "null_resource" "prepare-kubespray" {
   }
   depends_on = [
     vsphere_virtual_machine.k8s-adminhost,
-    vsphere_virtual_machine.k8snodes,
+    vsphere_virtual_machine.k8s-nodes,
     null_resource.set-public-key,
     null_resource.cloud-init-adminhost,
   ]
 }
 
 resource "null_resource" "run-kubespray" {
-  count = var.k8s-global.run_kuebspray == "yes" ? 1 : 0
+  count = var.k8s-global.run_kubespray == "yes" ? 1 : 0
   
   connection {
     host = vsphere_virtual_machine.k8s-adminhost.default_ip_address
@@ -270,10 +270,10 @@ resource "null_resource" "run-kubespray" {
       "cd ~/",
       "~/run-kubespray.sh",
       "mkdir .kube",
-      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8snodes[0].default_ip_address} sudo cp /etc/kubernetes/admin.conf ~/config",
-      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8snodes[0].default_ip_address} sudo chown ${var.k8s-global.username}:${var.k8s-global.username} ~/config",
-      "scp -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8snodes[0].default_ip_address}:~/config .kube/config",
-      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8snodes[0].default_ip_address} rm ~/config",
+      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo cp /etc/kubernetes/admin.conf ~/config",
+      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} sudo chown ${var.k8s-global.username}:${var.k8s-global.username} ~/config",
+      "scp -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address}:~/config .kube/config",
+      "ssh -oStrictHostKeyChecking=no ${vsphere_virtual_machine.k8s-nodes[0].default_ip_address} rm ~/config",
     ]
   }
   depends_on = [
@@ -286,5 +286,5 @@ output "k8s-adminhost-ip" {
 }
 
 output "k8s-node_ips" {
-  value = ["${vsphere_virtual_machine.k8snodes[*].default_ip_address}"]
+  value = ["${vsphere_virtual_machine.k8s-nodes[*].default_ip_address}"]
 }
