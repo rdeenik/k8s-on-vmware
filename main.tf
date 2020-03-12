@@ -145,6 +145,7 @@ resource "vsphere_virtual_machine" "k8s-nodes" {
     adapter_type        = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
+  # If you don't need a separate iSCSI interface, you should remove this second network_interface part
   network_interface {
     network_id          = data.vsphere_network.iscsi_network.id
   }
