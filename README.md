@@ -40,9 +40,17 @@ The following steps need to be executed in order ot deploy Kubernetes using this
    - If you which make changes to the `k8s-global` settings or the `k8s-adminhost` settings if you want;
    - Make sure you set the correct iscsi_subnet (if you require it) in the `k8snodes` section.
 4. Deploy Kubernetes using Terraform by executing the following commands:
-   ```
-   terraform init
-   terraform plan
-   terraform apply
-   ```
+
+   - First we need to initialize terraform (downloading the required Terraform providers for this project)
+   
+     `terraform init`
+   
+   - econdly we need to plan the terraform project, to make sure we are ready to deploy. You might get some errors on your vSphere environment details if you made a mistake in the variables.tf file.
+   
+     `terraform plan`
+   
+   - Finally apply the project, at which point the VM's and Kubespray are being deployed.
+   
+     `terraform apply`
+   
    
