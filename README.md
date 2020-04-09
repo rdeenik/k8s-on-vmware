@@ -70,7 +70,7 @@ The previous `terraform apply` command will return the IP addresses of the Admin
 **Logon to the administrative host**
 To logon to the administrative host you can use the user created (see `username` option in `variables.tf` file) and the private key that was created by the deployment.
 
-`ssh -i keys\id_rsa-k8s-on-vmware k8sadmin@[use IP address from output above]`
+`ssh -i keys/id_rsa-k8s-on-vmware k8sadmin@[use IP address from output above]`
 
 The command above will automatically connect and log you in on the Administrative host.
 
