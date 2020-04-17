@@ -5,3 +5,4 @@
 .terraform.tfstate.lock.info
 k8s-on-vmware/keys
 .idea/**
+.idea/k8s-on-vsphere.iml
