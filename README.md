@@ -38,7 +38,7 @@ The following steps need to be executed in order ot deploy Kubernetes using this
 2. The first step is to download this repo to you workstation.
 
    ```
-   git clone https://github.com/dnix101/k8s-on-vsphere.git
+   git clone https://github.com/dnix101/k8s-on-vmware.git
    ```
 
 3. Change the `variables.tf` file to match your environment.
