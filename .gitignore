@@ -4,4 +4,4 @@
 .terraform
 .terraform.tfstate.lock.info
 k8s-on-vmware/keys
-.idea/*
+.idea/**
