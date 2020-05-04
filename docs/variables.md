@@ -14,12 +14,12 @@ All configurable settings are located in the `variables.tf` file at the root of 
 Parameter | Example | Description
 --------- | ------- | -----------
 vcenter_server | 10.1.1.1 | The IP address or DNS name of you vCenter server
-user | "administrator@vsphere.local"
-password | ""
-datacenter | "datacenter"
-cluster | "cluster"
-datastore | "datastore1"
-vm_network | "VM Network"
+user | administrator@vsphere.local | The username you wish to use to connect to the vCenter server
+password | password123 | The password used to authenticate to the vCenter server
+datacenter | Datacenter | The Datacenter object within vCenter to use for provisioning the project 
+cluster | Cluster | The Datacenter object within vCenter to use for provisioning the project
+datastore | datastore1 | The VMFS/vVol datastore to use for the provisioning of the VM's
+vm_network | VM Network | The network / port group to use as management network (your deployment system needs access to this management network via SSH for the Terraform project to be able to complete)
 iscsi_network | "iSCSI"
 
 # Global K8S cluster parameters
