@@ -16,34 +16,23 @@ Parameter | Example | Description
 vcenter_server | 10.1.1.1 | The IP address or DNS name of you vCenter server
 user | administrator@vsphere.local | The username you wish to use to connect to the vCenter server
 password | password123 | The password used to authenticate to the vCenter server
-datacenter | Datacenter | The Datacenter object within vCenter to use for provisioning the project 
-cluster | Cluster | The Datacenter object within vCenter to use for provisioning the project
+datacenter | Datacenter | The Datacenter within vCenter to use for provisioning the project 
+cluster | Cluster | The Cluster within vCenter to use for provisioning the project
 datastore | datastore1 | The VMFS/vVol datastore to use for the provisioning of the VM's
-vm_network | VM Network | The network / port group to use as management network (your deployment system needs access to this management network via SSH for the Terraform project to be able to complete)
-iscsi_network | "iSCSI"
+vm_network | VM Network | The name of the network / port group to use as management network (your deployment system needs access to this management network via SSH for the Terraform project to be able to complete)
+iscsi_network | iSCSI Network | The name of the network / port group to use for iSCSI storage traffic to an external storage system (if you do not need this, read the remakrs below)
 
-# Global K8S cluster parameters
-variable "k8s-global" {
-    type                        = map(string)
-    description                 = "Global settings for the k8s cluster"
+### Global K8S cluster parameters
+Parameter | Example | Description
+--------- | ------- | -----------
+username | k8sadmin | Enter the username you wish to create to logon as administrator to the VM's
+timezone | Europe/Amsterdam | Enter the timezone, use any supported timezone (http://manpages.ubuntu.com/manpages/bionic/man3/DateTime::TimeZone::Catalog.3pm.html)
+run_kubespray | yes | If you wish to automatically run Kubespray, set to `yes`, use `no` if you'd like to be able to first make some changes to the Kubespray config before starting the deployment
+kube_version | default | Set the Kubernetes version you'd like to install using Kubespray
+private_key | keys/id_rsa-k8s-on-vmware | Set the full path to the RSA keys to use for authentication. If the keys do not exist, they will be created otherwise the existing key files will be used (if you want to use keys in your homedirectory, don't use `~/.ssh/id_rsa` but use `/Users/user/.ssh/id_rsa` instead).
+public_key | keys/id_rsa-k8s-on-vmware.pub |  Set the full path to the RSA keys to use for authentication. If the keys do not exist, they will be created otherwise the existing key files will be used (if you want to use keys in your homedirectory, don't use `~/.ssh/id_rsa.pub` but use `/Users/user/.ssh/id_rsa.pub` instead).
 
-    default = {
-        # Enter a username (other than root), which you'll use to login to the adminhost and k8s nodes
-        username                = "k8sadmin"
-        # Specify the time zone for the servers
-        timezone                = "Europe/Amsterdam"
-        # If you want to run Kubespray automatically as part of the Terraform project set run_kubespray to "yes", if you want to tweak Kubespray parameters set to no
-        run_kubespray           = "yes"
-        # If you want a specific version of Kubernetes set kube_version to the requested version, otherwise set to "default" to use the Kubespray default version
-        kube_version             = "v1.17.2"
-        #kube_version             = "default"
-        # Where would you like to store the public and private keys to use to logon to the servers and for the passwordless access required by Kubespray
-        private_key             = "keys/id_rsa-k8s-on-vmware"
-        public_key              = "keys/id_rsa-k8s-on-vmware.pub"
-    }
-}
-
-# Admin node config parameters
+### Admin node config parameters
 variable "k8s-adminhost" {
     type                        = map(string)
     description                 = "Details for the k8s administrative node"
@@ -66,7 +55,7 @@ variable "k8s-adminhost" {
     }
 }
 
-# K8S node config parameters
+### K8S node config parameters
 variable "k8s-nodes" {
     type                        = map(string)
     description                 = "Details for the k8s worker nodes"
@@ -97,3 +86,6 @@ variable "k8s-nodes" {
         iscsi_startip           = "151"
     }
 }
+
+## No iSCSI network
+Really?
