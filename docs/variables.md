@@ -33,6 +33,8 @@ private_key | keys/id_rsa-k8s-on-vmware | Set the full path to the RSA keys to u
 public_key | keys/id_rsa-k8s-on-vmware.pub |  Set the full path to the RSA keys to use for authentication. If the keys do not exist, they will be created otherwise the existing key files will be used (if you want to use keys in your homedirectory, don't use `~/.ssh/id_rsa.pub` but use `/Users/user/.ssh/id_rsa.pub` instead).
 
 ### Admin node config parameters
+Parameter | Example | Description
+--------- | ------- | -----------
 hostname | k8s-adminhost | Specify the hostname of the management host used to administer the cluster
 num_cpus | 2 | Number of vCPUs used for the management host
 memory | 1024 | Virtual memory used for the management host
@@ -45,24 +47,37 @@ mgmt_dns_servers | 8.8.8.8,8.8.4.4 | The DNS servers IP address used by the mana
 template | ubuntu-bionic-18.04-cloudimg | The name of the Ubuntu cloudimage template in vCenter used to deploy the management host
 
 ### K8S node config parameters
-hostname | k8s-node | The prefix of the Kubernetes nodes hostname, which will be followed by the node count (eg. fullname would be `k8s-node1`)
+Parameter | Example | Description
+--------- | ------- | -----------
+hostname | k8s-node | The prefix of the Kubernetes nodes hostname, which will be followed by the node count (eg. when four nodes are used, a hostname of `k8s-node` would result in `k8s-node1` - `k8s-node4`)
 number_of_nodes | 3 | Number of worker nodes in the Kubernetes cluster to deploy, generally 3 or more node should be used
-num_cpus | 2 | Number of vCPUs used for the management host
-memory | 2048 | Virtual memory used for the management host
-disk_size | 20 | Disk size for the management host
-template | ubuntu-bionic-18.04-cloudimg | The name of the Ubuntu cloudimage template in vCenter used to deploy the management host
-mgmt_use_dhcp | no | Set to `yes` is DHCP should be used for the IP assignment of the management host
+num_cpus | 2 | Number of vCPUs used for each Kubernetes node
+memory | 2048 | Virtual memory used for each Kubernetes node
+disk_size | 20 | Disk size for each Kubernetes node
+template | ubuntu-bionic-18.04-cloudimg | The name of the Ubuntu cloudimage template in vCenter used to deploy the Kubernetes nodes
+mgmt_use_dhcp | no | Set to `yes` if DHCP should be used for the IP assignment of the management IP address for the Kubernetes nodes
 mgmt_interface_name | ens192 | Enter the interface name for the primary network interface (`ens192` for Ubuntu)
-mgmt_subnet | 192.168.10.0/24 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-mgmt_startip | 151  | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-mgmt_gateway | 192.168.10.254 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-mgmt_dns_servers| 8.8.8.8,8.8.4.4 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-        # Specify the details for the iSCSI interface. If you do not need a second interface, set use_iscsi_interface to "no" and remove the second NIC section from main.tf
-use_iscsi_interface | yes | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-iscsi_use_dhcp | no | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-iscsi_interface_name | ens224 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-iscsi_subnet | 172.16.10.0/24 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
-iscsi_startip | 151 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_subnet | 192.168.10.0/24 | The IP subnet for the Kubernetes cluster nodes (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_startip | 151  | The first IP address used, each node will receive a subsequent IP address, eg. 192.168.10.151 for the fist not and 192.168.10.154 for the forth node (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_gateway | 192.168.10.254 | The default gateway used by the Kubernetes nodes (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_dns_servers| 8.8.8.8,8.8.4.4 | The DNS servers used by the Kubernetes nodes (only used if `mgmt_use_dhcp` is set to `no`)
+use_iscsi_interface | yes | If a second network interface is to be configured set to `yes`, otherwise set to `no` and read the notes below
+iscsi_use_dhcp | no | Set to `yes` if DHCP should be used for the IP assignment of the iSCSI network of the Kubernetes nodes
+iscsi_interface_name | ens224 | Enter the interface name for the iSCSI network interface (`ens224` for Ubuntu)
+iscsi_subnet | 172.16.10.0/24 | The IP subnet for the Kubernetes cluster nodes for the iSCSI network interface (only used if `iscsi_use_dhcp` is set to `no`)
+iscsi_startip | 151 | The first IP address used for the iSCSI network interface, each node will receive a subsequent IP address, eg. 192.168.10.151 for the fist not and 192.168.10.154 for the forth node (only used if `iscsi_use_dhcp` is set to `no`)
 
 ## No iSCSI network
-Really?
+If no second network interface is required for iSCSI network, the second network interface can be disabled for the Kubernetes nodes. To do this execute the followin two steps:
+1. Set `use_iscsi_interface` in the `variables.tf` configuration file. 
+2. Find and remove the following lines from the file `main.tf`:
+
+```
+  # If you don't need a separate iSCSI interface, you should remove this second network_interface part
+  network_interface {
+    network_id          = data.vsphere_network.iscsi_network.id
+  }
+```
+
+Save both files and continue with the deployment of the cluster.
+
