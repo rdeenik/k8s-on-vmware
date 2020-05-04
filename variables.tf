@@ -75,8 +75,7 @@ variable "k8s-nodes" {
         # Specify the details for the iSCSI interface. If you do not need a second interface, set use_iscsi_interface to "no" and remove the second NIC section from main.tf
         use_iscsi_interface     = "yes"
         iscsi_interface_name    = "ens224"
-        iscsi_subnet            = "172.16.10."
+        iscsi_subnet            = "172.16.10.0/24"
         iscsi_startip           = "101"
-        iscsi_maskbits          = "24"
     }
 }
