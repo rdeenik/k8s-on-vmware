@@ -33,59 +33,36 @@ private_key | keys/id_rsa-k8s-on-vmware | Set the full path to the RSA keys to u
 public_key | keys/id_rsa-k8s-on-vmware.pub |  Set the full path to the RSA keys to use for authentication. If the keys do not exist, they will be created otherwise the existing key files will be used (if you want to use keys in your homedirectory, don't use `~/.ssh/id_rsa.pub` but use `/Users/user/.ssh/id_rsa.pub` instead).
 
 ### Admin node config parameters
-variable "k8s-adminhost" {
-    type                        = map(string)
-    description                 = "Details for the k8s administrative node"
-
-    default = {
-        # Which hostname and virtual machine name do you want to use for the administrative host
-        hostname                = "k8s-adminhost"
-        # Specify the VM resources for the administrative host
-        num_cpus                = "2"
-        memory                  = "1024"
-        disk_size               = "20"
-        # Specify the details for the management interface.
-        mgmt_use_dhcp          = "no"
-        mgmt_interface_name    = "ens192"
-        mgmt_ip                = "192.168.10.150/24"
-        mgmt_gateway           = "192.168.10.254"
-        mgmt_dns_servers       = "8.8.8.8,8.8.4.4"
-        # Specify the name of the Ubuntu Cloud Image template in vSphere (download template from cloud-images.ubuntu.com)
-        template                = "ubuntu-bionic-18.04-cloudimg"
-    }
-}
+hostname | k8s-adminhost | Specify the hostname of the management host used to administer the cluster
+num_cpus | 2 | Number of vCPUs used for the management host
+memory | 1024 | Virtual memory used for the management host
+disk_size | 20 | Disk size for the management host
+mgmt_use_dhcp | no | Set to `yes` is DHCP should be used for the IP assignment of the management host
+mgmt_interface_name | ens192 | Enter the interface name for the primary network interface (`ens192` for Ubuntu)
+mgmt_ip | 192.168.10.150/24 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_gateway | 192.168.10.254 | The default gateway used by the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_dns_servers | 8.8.8.8,8.8.4.4 | The DNS servers IP address used by the management host (only used if `mgmt_use_dhcp` is set to `no`)
+template | ubuntu-bionic-18.04-cloudimg | The name of the Ubuntu cloudimage template in vCenter used to deploy the management host
 
 ### K8S node config parameters
-variable "k8s-nodes" {
-    type                        = map(string)
-    description                 = "Details for the k8s worker nodes"
-
-    default = {
-        # Which hostname and virtual machine name do you want to use for the K8S nodes, this name will be followed by the node count (eg. k8s-node1)
-        hostname                = "k8s-node"
-        # Specify the number of Kubernetes nodes you wish to deploy (normally you should deploy 3 or more)
-        number_of_nodes         = "3"
-        # Specify the VM resources for the administrative host
-        num_cpus                = "2"
-        memory                  = "2048"
-        disk_size               = "20"
-        # Specify the name of the Ubuntu Cloud Image template in vSphere (download template from cloud-images.ubuntu.com)
-        template                = "ubuntu-bionic-18.04-cloudimg"
-        # Specify the details for the management interface.
-        mgmt_use_dhcp          = "no"
-        mgmt_interface_name    = "ens192"
-        mgmt_subnet            = "192.168.10.0/24"
-        mgmt_startip           = "151"
-        mgmt_gateway           = "192.168.10.254"
-        mgmt_dns_servers       = "8.8.8.8,8.8.4.4"
+hostname | k8s-node | The prefix of the Kubernetes nodes hostname, which will be followed by the node count (eg. fullname would be `k8s-node1`)
+number_of_nodes | 3 | Number of worker nodes in the Kubernetes cluster to deploy, generally 3 or more node should be used
+num_cpus | 2 | Number of vCPUs used for the management host
+memory | 2048 | Virtual memory used for the management host
+disk_size | 20 | Disk size for the management host
+template | ubuntu-bionic-18.04-cloudimg | The name of the Ubuntu cloudimage template in vCenter used to deploy the management host
+mgmt_use_dhcp | no | Set to `yes` is DHCP should be used for the IP assignment of the management host
+mgmt_interface_name | ens192 | Enter the interface name for the primary network interface (`ens192` for Ubuntu)
+mgmt_subnet | 192.168.10.0/24 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_startip | 151  | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_gateway | 192.168.10.254 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+mgmt_dns_servers| 8.8.8.8,8.8.4.4 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
         # Specify the details for the iSCSI interface. If you do not need a second interface, set use_iscsi_interface to "no" and remove the second NIC section from main.tf
-        use_iscsi_interface     = "yes"
-        iscsi_use_dhcp          = "no"
-        iscsi_interface_name    = "ens224"
-        iscsi_subnet            = "172.16.10.0/24"
-        iscsi_startip           = "151"
-    }
-}
+use_iscsi_interface | yes | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+iscsi_use_dhcp | no | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+iscsi_interface_name | ens224 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+iscsi_subnet | 172.16.10.0/24 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
+iscsi_startip | 151 | The static IP address for the management host (only used if `mgmt_use_dhcp` is set to `no`)
 
 ## No iSCSI network
 Really?
