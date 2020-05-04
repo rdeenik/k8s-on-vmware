@@ -1,22 +1,26 @@
-# Generic vSphere config variables
-variable "vsphere_config" {
-    type                        = map(string)
-    description                 = "vSphere environment and connection details"
+# Configuring K8S-on-VMware using the variables.ft file
 
-    default = {
-        # Enter your vCenter server IP address or DNS name below and the 
-        vcenter_server          = ""
-        user                    = "administrator@vsphere.local"
-        password                = ""
-        # Enter the datacenter, cluster and datastore to deploy the VM's to
-        datacenter              = "datacenter"
-        cluster                 = "cluster"
-        datastore               = "datastore1"
-        # Enter the network portgroup names to use, iscsi_network is optional, see k8s-nodes
-        vm_network              = "VM Network"
-        iscsi_network           = "iSCSI"
-    }
-}
+## Introduction
+
+This Terraform project allows you to deploy Kubernetes on vSphere. It uses Kubespray for the deployment and allows you to tweak (some, more are coming is time permits) of the deployment options. It will automatically create VM's on VMware vSphere required to deploy Kubernetes using Kubespray. Then it will download Kubespray and prepare the nodes. Finally it can automatically run Kubespray to deploy Kubernetes, but you can also choose to hold-of with the Kubespray deployment (see the run_kubespray parameter below), so that you can tweak the Kubespray parameters. Once have the correct settings in place for Kubespray you can run Kubespray with a single command (~/run_kubespray.sh) to deploy Kubernetes.
+
+The purpose of this project is to provide a quick Kubernetes environment for training and experimenting. If you're going to deploy a production environment, you're beter of with a more mature Kubernetes distribution or deployment.
+  
+
+## How to configure the project
+All configurable settings are located in the `variables.tf` file at the root of the project.
+
+### Generic vSphere config variables
+Parameter | Description
+-----------------------
+vcenter_server | ""
+user | "administrator@vsphere.local"
+password | ""
+datacenter | "datacenter"
+cluster | "cluster"
+datastore | "datastore1"
+vm_network | "VM Network"
+iscsi_network | "iSCSI"
 
 # Global K8S cluster parameters
 variable "k8s-global" {
