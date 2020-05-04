@@ -29,7 +29,7 @@ variable "k8s-global" {
         # Specify the time zone for the servers
         timezone                = "Europe/Amsterdam"
         # If you want to run Kubespray automatically as part of the Terraform project set run_kubespray to "yes", if you want to tweak Kubespray parameters set to no
-        run_kubespray           = "no"
+        run_kubespray           = "yes"
         # If you want a specific version of Kubernetes set kube_version to the requested version, otherwise set to "default" to use the Kubespray default version
         kube_version             = "v1.17.2"
         #kube_version             = "default"
@@ -51,6 +51,12 @@ variable "k8s-adminhost" {
         num_cpus                = "2"
         memory                  = "1024"
         disk_size               = "20"
+        # Specify the details for the management interface.
+        mgmt_use_dhcp          = "no"
+        mgmt_interface_name    = "ens192"
+        mgmt_ip                = "192.168.10.100/24"
+        mgmt_gateway           = "192.168.10.254"
+        mgmt_dns_servers       = "8.8.8.8,8.8.4.4"
         # Specify the name of the Ubuntu Cloud Image template in vSphere (download template from cloud-images.ubuntu.com)
         template                = "ubuntu-bionic-18.04-cloudimg"
     }
@@ -72,8 +78,16 @@ variable "k8s-nodes" {
         disk_size               = "20"
         # Specify the name of the Ubuntu Cloud Image template in vSphere (download template from cloud-images.ubuntu.com)
         template                = "ubuntu-bionic-18.04-cloudimg"
+        # Specify the details for the management interface.
+        mgmt_use_dhcp          = "no"
+        mgmt_interface_name    = "ens192"
+        mgmt_subnet            = "192.168.10.0/24"
+        mgmt_startip           = "101"
+        mgmt_gateway           = "192.168.10.254"
+        mgmt_dns_servers       = "8.8.8.8,8.8.4.4"
         # Specify the details for the iSCSI interface. If you do not need a second interface, set use_iscsi_interface to "no" and remove the second NIC section from main.tf
         use_iscsi_interface     = "yes"
+        iscsi_use_dhcp          = "no"
         iscsi_interface_name    = "ens224"
         iscsi_subnet            = "172.16.10.0/24"
         iscsi_startip           = "101"
