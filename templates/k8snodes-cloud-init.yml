@@ -23,12 +23,25 @@ write_files:
   - content: |
       network:
           ethernets:
-              ens192:
-                  dhcp4: true
-              %{ if use_iscsi_nic == "yes" }
-              ${iscsi_int_name}:
+              ${mgmt-int-name}:
+              %{ if mgmt-use-dhcp == "no" }
                   dhcp4: false
-                  addresses: ${iscsi-ip-addr}
+                  addresses: [${mgmt-ip-addr}]
+                  gateway4: ${mgmt-ip-gw}
+                  nameservers:
+                      addresses: [${mgmt-dns}] 
+
+              %{ else }
+                  dhcp4: true
+              %{ endif }
+              %{ if use-iscsi-nic == "yes" }
+              ${iscsi-int-name}:
+                  %{ if iscsi-use-dhcp == "no" }
+                  dhcp4: false
+                  addresses: [${iscsi-ip-addr}]
+                  %{ else}
+                  dhcp4: true
+                  %{ endif}
               %{ endif }
           version: 2
     path: /etc/netplan/50-cloud-init.yaml
