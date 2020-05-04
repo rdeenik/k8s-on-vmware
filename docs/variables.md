@@ -11,9 +11,9 @@ The purpose of this project is to provide a quick Kubernetes environment for tra
 All configurable settings are located in the `variables.tf` file at the root of the project.
 
 ### Generic vSphere config variables
-Parameter | Description
---------- | -----------
-vcenter_server | ""
+Parameter | Example | Description
+--------- | ------- | -----------
+vcenter_server | 10.1.1.1 | The IP address or DNS name of you vCenter server
 user | "administrator@vsphere.local"
 password | ""
 datacenter | "datacenter"
