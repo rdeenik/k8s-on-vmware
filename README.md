@@ -41,7 +41,7 @@ The following steps need to be executed in order ot deploy Kubernetes using this
    git clone https://github.com/dnix101/k8s-on-vmware.git
    ```
 
-3. Change the `variables.tf` file to match your environment.
+3. Change the `variables.tf` file to match your environment (see https://github.com/dnix101/k8s-on-vmware/blob/master/docs/variables.md).
    - Specify your vCenter server details, cluster, datastore and networking details in the `vsphere_config` section;
    - If you which make changes to the `k8s-global` settings or the `k8s-adminhost` settings if you want;
    - Make sure you set the correct iscsi_subnet (if you require it) in the `k8snodes` section.
