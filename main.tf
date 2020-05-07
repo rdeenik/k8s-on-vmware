@@ -1,11 +1,4 @@
 # Inspired by https://sdorsett.github.io/post/2018-12-26-using-local-exec-and-remote-exec-provisioners-with-terraform/
-# To Do:
-# - Check if local SSH keypair exists, otherwise create one
-# - Install kubectl
-# - Copy config from master node (.kube/config)
-# - set fixed IP addresses (at least for iSCSI)
-# - Testing...
-#
 #
 #
 #
