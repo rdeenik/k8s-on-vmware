@@ -10,7 +10,7 @@ resource "null_resource" "generate-sshkey" {
     }
     provisioner "local-exec" {
         command = "yes n | ssh-keygen -b 4096 -t rsa -C 'k8s-on-vmware-sshkey' -N '' -f ${var.k8s-global.private_key}"
-        on_failure = "continue"
+        on_failure = continue
     }
 }
 
@@ -187,7 +187,7 @@ resource "null_resource" "cloud-init-adminhost" {
   }
   
   connection {
-    host = local.adminhost_ip
+    host = vsphere_virtual_machine.k8s-adminhost.default_ip_address
     type = "ssh"
     user = var.k8s-global.username
     private_key = file(var.k8s-global.private_key)
@@ -197,6 +197,7 @@ resource "null_resource" "cloud-init-adminhost" {
     inline = [
       "while [ ! -f /etc/cloud/cloud-init.done ]; do sleep 2; done",
     ]
+    on_failure = continue
   }
 }
 
@@ -226,6 +227,10 @@ resource "null_resource" "set-public-key" {
   provisioner "remote-exec" {
     inline         = ["chmod 600 ~/.ssh/id_rsa",]
   }
+
+  depends_on = [
+    null_resource.cloud-init-adminhost,
+  ]
 }
 
 resource "null_resource" "prepare-kubespray" {
