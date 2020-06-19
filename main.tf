@@ -10,7 +10,7 @@ resource "null_resource" "generate-sshkey" {
     }
     provisioner "local-exec" {
         command = "yes n | ssh-keygen -b 4096 -t rsa -C 'k8s-on-vmware-sshkey' -N '' -f ${var.k8s-global.private_key}"
-        on_failure = "continue"
+        on_failure = continue
     }
 }
 
@@ -265,7 +265,6 @@ resource "null_resource" "prepare-kubespray" {
       "echo \"ssh -oStrictHostKeyChecking=no ${local.node_ips[0]} sudo chown ${var.k8s-global.username}:${var.k8s-global.username} ~/config\" >> ~/run-kubespray.sh",
       "echo \"scp -oStrictHostKeyChecking=no ${local.node_ips[0]}:~/config .kube/config\" >> ~/run-kubespray.sh",
       "echo \"ssh -oStrictHostKeyChecking=no ${local.node_ips[0]} rm ~/config\" >> ~/run-kubespray.sh",
-      "echo \"echo "source <(kubectl completion bash)" >> ~/.bashrc\" >> ~/run-kubespray.sh",
       "chmod +x ~/run-kubespray.sh",
     ]
   }
